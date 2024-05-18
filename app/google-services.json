@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "835468054296",
+    "project_id": "newssho-4e281",
+    "storage_bucket": "newssho-4e281.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835468054296:android:f457007e43629db3d3d86d",
+        "android_client_info": {
+          "package_name": "com.yuriishcherbyna.newssho"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCepGQogvXoq_Qmw1mx7KVo4XXpU6cNCE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
