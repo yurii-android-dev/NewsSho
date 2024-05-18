@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.newssho.ui.theme
+package com.yuriishcherbyna.newssho.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

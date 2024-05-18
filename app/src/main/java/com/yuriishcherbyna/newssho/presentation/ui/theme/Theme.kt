@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.newssho.ui.theme
+package com.yuriishcherbyna.newssho.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
