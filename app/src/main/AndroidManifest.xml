@@ -16,7 +16,8 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.AnimatedSplash.MySplash" >
+            android:theme="@style/Theme.AnimatedSplash.MySplash"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
