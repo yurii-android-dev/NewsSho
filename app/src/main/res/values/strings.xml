@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NewsSho</string>
+    <string name="first_onboarding_title">Get the latest news from reliable sources</string>
+    <string name="second_onboarding_title">Get actual news from around the world</string>
+    <string name="third_onboarding_title">Sport, politics, healthy, &amp; anything</string>
+    <string name="pager_background_color_label">Background color</string>
 </resources>
