@@ -12,7 +12,12 @@
           "package_name": "com.yuriishcherbyna.newssho"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "835468054296-pmg0556cc93uddv46uij2km9jrpfme39.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCepGQogvXoq_Qmw1mx7KVo4XXpU6cNCE8"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835468054296-pmg0556cc93uddv46uij2km9jrpfme39.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
