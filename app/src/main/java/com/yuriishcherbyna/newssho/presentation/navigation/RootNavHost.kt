@@ -1,12 +1,12 @@
 package com.yuriishcherbyna.newssho.presentation.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.yuriishcherbyna.newssho.presentation.navigation.Screens
+import com.yuriishcherbyna.newssho.presentation.sign_in.SignInScreen
+import com.yuriishcherbyna.newssho.presentation.sign_in.SignInUiState
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeScreen
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeViewModel
 
@@ -41,7 +41,10 @@ fun RootNavHost(
         composable(
             route = Screens.SignIn.route,
         ) {
-            Log.d("RootNavHost", "Sign In screen")
+            SignInScreen(
+                uiState = SignInUiState(),
+                onSignInClick = {}
+            )
         }
     }
 
