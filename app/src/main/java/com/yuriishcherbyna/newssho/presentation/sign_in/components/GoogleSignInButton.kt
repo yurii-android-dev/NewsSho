@@ -56,7 +56,7 @@ fun GoogleSignInButton(
                 CircularProgressIndicator(
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .size(24.dp)
+                        .size(20.dp)
                 )
             }
         }

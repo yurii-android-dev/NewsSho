@@ -1,6 +1,6 @@
 package com.yuriishcherbyna.newssho.di
 
-import com.yuriishcherbyna.newssho.data.DataStoreRepositoryImpl
+import com.yuriishcherbyna.newssho.data.repository.DataStoreRepositoryImpl
 import com.yuriishcherbyna.newssho.domain.repository.DataStoreRepository
 import dagger.Binds
 import dagger.Module

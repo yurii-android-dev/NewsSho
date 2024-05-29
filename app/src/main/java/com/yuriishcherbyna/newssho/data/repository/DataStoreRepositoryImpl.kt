@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.newssho.data
+package com.yuriishcherbyna.newssho.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore
