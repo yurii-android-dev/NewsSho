@@ -5,6 +5,8 @@ import com.yuriishcherbyna.newssho.domain.model.UserData
 
 interface AuthRepository {
 
+    suspend fun getGoogleToken(): String?
+
     suspend fun signIn(token: String): SignInResult
 
     fun getUserData(): UserData?

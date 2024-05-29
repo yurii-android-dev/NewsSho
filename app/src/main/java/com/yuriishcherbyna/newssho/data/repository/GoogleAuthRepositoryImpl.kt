@@ -26,7 +26,7 @@ class GoogleAuthRepositoryImpl @Inject constructor(
     private val credentialManager: CredentialManager
 ): AuthRepository {
 
-    suspend fun getGoogleToken(): String? {
+    override suspend fun getGoogleToken(): String? {
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
             .setServerClientId(context.getString(R.string.web_client_id))
