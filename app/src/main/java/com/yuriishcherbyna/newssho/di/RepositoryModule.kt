@@ -1,6 +1,8 @@
 package com.yuriishcherbyna.newssho.di
 
 import com.yuriishcherbyna.newssho.data.repository.DataStoreRepositoryImpl
+import com.yuriishcherbyna.newssho.data.repository.GoogleAuthRepositoryImpl
+import com.yuriishcherbyna.newssho.domain.repository.AuthRepository
 import com.yuriishcherbyna.newssho.domain.repository.DataStoreRepository
 import dagger.Binds
 import dagger.Module
@@ -14,8 +16,14 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun provideDataStoreRepository(
+    abstract fun bindDataStoreRepository(
         dataStoreRepositoryImpl: DataStoreRepositoryImpl
     ): DataStoreRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        googleAuthRepositoryImpl: GoogleAuthRepositoryImpl
+    ): AuthRepository
 
 }
