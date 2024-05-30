@@ -16,6 +16,7 @@ import com.yuriishcherbyna.newssho.domain.model.SignInResult
 import com.yuriishcherbyna.newssho.domain.model.UserData
 import com.yuriishcherbyna.newssho.domain.repository.AuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "GoogleAuthRepositoryImpl"
@@ -57,7 +58,7 @@ class GoogleAuthRepositoryImpl @Inject constructor(
     override suspend fun signIn(token: String): SignInResult {
         return try {
             val authProvider = GoogleAuthProvider.getCredential(token, null)
-            val user = auth.signInWithCredential(authProvider).result.user
+            val user = auth.signInWithCredential(authProvider).await().user
             SignInResult(
                 userData = user?.run {
                     UserData(

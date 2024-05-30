@@ -9,4 +9,5 @@
     <string name="news_icon">News icon</string>
     <string name="sign_in_desc">Stay up to date with all \n the latest news in the world</string>
     <string name="web_client_id">137429257705-u8r1n7gf9q46pbmdihnm0833u97g9ots.apps.googleusercontent.com</string>
+    <string name="sign_in_successfully">Sign in successfully</string>
 </resources>
