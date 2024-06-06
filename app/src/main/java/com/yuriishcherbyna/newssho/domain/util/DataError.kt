@@ -10,3 +10,13 @@ sealed interface DataError : Error {
         UNKNOWN
     }
 }
+
+fun httpCodeToNetworkError(code: Int): DataError.Network {
+    return when (code) {
+        400 -> DataError.Network.REQUEST_TIMEOUT
+        401 -> DataError.Network.UNAUTHORIZED
+        429 -> DataError.Network.TOO_MANY_REQUESTS
+        500 -> DataError.Network.SERVER_ERROR
+        else -> DataError.Network.UNKNOWN
+    }
+}
