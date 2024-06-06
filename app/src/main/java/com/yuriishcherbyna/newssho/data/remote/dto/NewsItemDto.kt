@@ -3,6 +3,7 @@ package com.yuriishcherbyna.newssho.data.remote.dto
 import com.squareup.moshi.Json
 
 data class NewsItemDto(
+    @Json(name = "source") val source: SourceDto,
     @Json(name = "author") val author: String?,
     @Json(name = "title") val title: String,
     @Json(name = "description") val description: String?,
