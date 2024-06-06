@@ -5,4 +5,5 @@ data class NewsItem(
     val url: String,
     val urlToImage: String?,
     val publishedAt: String,
+    val sourceName: String
 )
