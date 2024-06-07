@@ -30,14 +30,7 @@ class HomeViewModel @Inject constructor(
                 when (result) {
                     is Result.Error -> {
                         _uiState.value = HomeUiState.Error(
-                            error = when (result.error) {
-                                DataError.Network.NO_INTERNET_CONNECTION -> R.string.no_internet
-                                DataError.Network.REQUEST_TIMEOUT -> R.string.the_request_timed_out
-                                DataError.Network.TOO_MANY_REQUESTS -> R.string.too_many_requests
-                                DataError.Network.SERVER_ERROR -> R.string.server_error
-                                DataError.Network.UNAUTHORIZED -> R.string.unauthorized
-                                DataError.Network.UNKNOWN -> R.string.unknown_error
-                            }
+                            error = result.error.toNetworkErrorMessageId()
                         )
                     }
                     is Result.Success -> {
