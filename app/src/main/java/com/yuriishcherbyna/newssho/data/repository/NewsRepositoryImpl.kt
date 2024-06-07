@@ -2,7 +2,8 @@ package com.yuriishcherbyna.newssho.data.repository
 
 import com.yuriishcherbyna.newssho.data.remote.NewsApi
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
-import com.yuriishcherbyna.newssho.data.remote.dto.NewsItemDto
+import com.yuriishcherbyna.newssho.data.remote.mappers.toNewsItem
+import com.yuriishcherbyna.newssho.domain.model.NewsItem
 import com.yuriishcherbyna.newssho.domain.repository.NewsRepository
 import com.yuriishcherbyna.newssho.domain.util.DataError
 import com.yuriishcherbyna.newssho.domain.util.Result
@@ -18,14 +19,14 @@ class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi
 ): NewsRepository {
 
-    override fun getLatestNews(category: Category): Flow<Result<List<NewsItemDto>, DataError.Network>> {
+    override fun getLatestNews(category: Category): Flow<Result<List<NewsItem>, DataError.Network>> {
         return flow {
             try {
                 val response = api.getLatestNews(
                     country = getCountryFromLocale(),
                     category = category
-                )
-                emit(Result.Success(response.articles))
+                ).articles.map { it.toNewsItem() }
+                emit(Result.Success(response))
             } catch (e: HttpException) {
                 val error = httpCodeToNetworkError(e.code())
                 emit(Result.Error(error))
@@ -35,13 +36,11 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun searchNews(query: String): Flow<Result<List<NewsItemDto>, DataError.Network>> {
+    override fun searchNews(query: String): Flow<Result<List<NewsItem>, DataError.Network>> {
         return flow {
             try {
-                val response = api.searchNews(
-                    query = query
-                )
-                emit(Result.Success(response.articles))
+                val response = api.searchNews(query = query).articles.map { it.toNewsItem() }
+                emit(Result.Success(response))
             } catch (e: HttpException) {
                 val error = httpCodeToNetworkError(e.code())
                 emit(Result.Error(error))

@@ -2,12 +2,10 @@ package com.yuriishcherbyna.newssho.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
-import com.yuriishcherbyna.newssho.data.remote.mappers.toNewsItem
 import com.yuriishcherbyna.newssho.domain.repository.NewsRepository
-import com.yuriishcherbyna.newssho.domain.util.DataError
 import com.yuriishcherbyna.newssho.domain.util.Result
+import com.yuriishcherbyna.newssho.presentation.util.toNetworkErrorMessageId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +41,7 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                     is Result.Success -> {
-                       val news = result.data.map { it.toNewsItem() }
+                       val news = result.data
                        _uiState.value = HomeUiState.Success(news)
                     }
                 }
