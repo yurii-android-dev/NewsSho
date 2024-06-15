@@ -1,5 +1,7 @@
 package com.yuriishcherbyna.newssho.di
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.yuriishcherbyna.newssho.BuildConfig
 import com.yuriishcherbyna.newssho.data.remote.NewsApi
 import dagger.Module
@@ -16,10 +18,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(
+        moshi: Moshi
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.NEWS_BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
