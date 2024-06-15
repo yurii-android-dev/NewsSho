@@ -16,6 +16,7 @@ import com.yuriishcherbyna.newssho.presentation.navigation.Screens
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        setupSplashScreen()
         enableEdgeToEdge()
 
         setContent {
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     RootNavHost(
                         startDestination = if (isCompleted) Screens.SignIn.route
-                            else Screens.Welcome.route
+                        else Screens.Welcome.route
                     )
                 }
             }
@@ -51,6 +52,18 @@ class MainActivity : ComponentActivity() {
             dataStoreRepository.readOnboardingState().collect { value ->
                 isCompleted = value
             }
+        }
+    }
+
+    private fun setupSplashScreen() {
+        var keepSplashScreenOn = true
+        lifecycleScope.launch {
+            delay(1000)
+            keepSplashScreenOn = false
+        }
+
+        installSplashScreen().setKeepOnScreenCondition {
+            keepSplashScreenOn
         }
     }
 }
