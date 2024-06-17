@@ -11,6 +11,7 @@ import com.yuriishcherbyna.newssho.util.Constants.SELECTED_CATEGORY_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+    private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
     val selectedCategory = savedStateHandle.getStateFlow(
@@ -33,18 +34,21 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getLatestNews(category: Category) {
-        _uiState.value = HomeUiState.Loading
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             newsRepository.getLatestNews(category).collect { result ->
                 when (result) {
                     is Result.Error -> {
-                        _uiState.value = HomeUiState.Error(
-                            error = result.error.toNetworkErrorMessageId()
-                        )
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = result.error.toNetworkErrorMessageId(),
+                                isLoading = false
+                            )
+                        }
                     }
                     is Result.Success -> {
                        val news = result.data
-                       _uiState.value = HomeUiState.Success(news)
+                       _uiState.update { it.copy(news = news, isLoading = false) }
                     }
                 }
             }
@@ -53,6 +57,10 @@ class HomeViewModel @Inject constructor(
 
     fun onCategoryChanged(category: Category) {
         savedStateHandle["selected_category"] = category
+    }
+
+    fun clearState() {
+        _uiState.value = HomeUiState()
     }
 
 }
