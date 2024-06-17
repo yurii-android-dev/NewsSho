@@ -6,4 +6,7 @@ object Constants {
     const val ONBOARDING_PREFERENCES = "onboarding_preferences"
     const val ONBOARDING_PREFERENCES_KEY = "onboarding_preferences_key"
 
+    // SavedStateHandle key
+    const val SELECTED_CATEGORY_KEY = "selected_category"
+
 }

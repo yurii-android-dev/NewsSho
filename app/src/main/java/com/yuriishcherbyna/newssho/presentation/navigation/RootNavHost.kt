@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yuriishcherbyna.newssho.R
+import com.yuriishcherbyna.newssho.presentation.home.HomeScreen
+import com.yuriishcherbyna.newssho.presentation.home.HomeViewModel
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInScreen
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInViewModel
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeScreen
@@ -90,6 +92,24 @@ fun RootNavHost(
             route = Screens.Home.route
         ) {
 
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val homeUiState by homeViewModel.uiState.collectAsState()
+            val selectedCategory by homeViewModel.selectedCategory.collectAsState()
+
+            HomeScreen(
+                uiState = homeUiState,
+                selectedCategory = selectedCategory,
+                onCategoryClicked = { category ->
+                    homeViewModel.onCategoryChanged(category)
+                    homeViewModel.getLatestNews(category)
+                },
+                onRefreshClicked = {
+                    homeViewModel.getLatestNews(selectedCategory)
+                },
+                onNewsClicked = {},
+                onBookmarkClicked = {},
+                onSearchClicked = {}
+            )
         }
     }
 

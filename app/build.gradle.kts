@@ -124,6 +124,9 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Icons Extended
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
 }
 
 kapt {
