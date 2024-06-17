@@ -101,9 +101,11 @@ fun RootNavHost(
                 selectedCategory = selectedCategory,
                 onCategoryClicked = { category ->
                     homeViewModel.onCategoryChanged(category)
+                    homeViewModel.clearState()
                     homeViewModel.getLatestNews(category)
                 },
                 onRefreshClicked = {
+                    homeViewModel.clearState()
                     homeViewModel.getLatestNews(selectedCategory)
                 },
                 onNewsClicked = {},

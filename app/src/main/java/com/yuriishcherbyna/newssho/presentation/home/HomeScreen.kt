@@ -65,10 +65,10 @@ fun HomeScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(key1 = uiState) {
-        if (uiState is HomeUiState.Error) {
+    LaunchedEffect(key1 = uiState.errorMessage) {
+        if (uiState.errorMessage != null) {
             snackbarHostState.showSnackbar(
-                message = context.getString(uiState.error),
+                message = context.getString(uiState.errorMessage),
                 duration = SnackbarDuration.Long
             )
         }
@@ -82,7 +82,7 @@ fun HomeScreen(
                     scrollBehavior = scrollBehavior,
                     onSearchClicked = onSearchClicked
                 )
-                if (uiState !is HomeUiState.Error) {
+                if (uiState.errorMessage == null) {
                     CategoryChips(
                         selectedCategory = selectedCategory,
                         onCategoryClicked = onCategoryClicked
@@ -99,20 +99,16 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            when (uiState) {
-                is HomeUiState.Success -> {
-                    NewsList(
-                        news = uiState.news,
-                        onNewsClicked = onNewsClicked,
-                        onBookmarkClicked = onBookmarkClicked
-                    )
-                }
-                HomeUiState.Loading -> {
-                    LoadingContent(modifier = Modifier.align(Alignment.Center))
-                }
-                is HomeUiState.Error -> {
-                    ErrorContent(onRefreshClicked = onRefreshClicked)
-                }
+            if (uiState.news.isNotEmpty()) {
+                NewsList(
+                    news = uiState.news,
+                    onNewsClicked = onNewsClicked,
+                    onBookmarkClicked = onBookmarkClicked
+                )
+            } else if (uiState.isLoading) {
+                LoadingContent(modifier = Modifier.align(Alignment.Center))
+            } else {
+                ErrorContent(onRefreshClicked = onRefreshClicked)
             }
         }
     }
@@ -216,7 +212,7 @@ fun HomeScreenPreview() {
             )
         }
         HomeScreen(
-            uiState = HomeUiState.Success(news),
+            uiState = HomeUiState(news = news),
             selectedCategory = Category.GENERAL,
             onRefreshClicked = {},
             onNewsClicked = {},
