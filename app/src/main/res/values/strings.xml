@@ -21,4 +21,7 @@
     <string name="bookmark_icon">Bookmark icon</string>
     <string name="search_icon">Search Icon</string>
     <string name="refresh">Refresh</string>
+    <string name="arrowback_icon">ArrowBack icon</string>
+    <string name="close_icon">Close icon</string>
+    <string name="search_placeholder_text">Type your search query</string>
 </resources>

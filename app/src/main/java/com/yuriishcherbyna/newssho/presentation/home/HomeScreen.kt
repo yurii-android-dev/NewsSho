@@ -1,9 +1,11 @@
 package com.yuriishcherbyna.newssho.presentation.home
 
+import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,11 +57,15 @@ import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 fun HomeScreen(
     uiState: HomeUiState,
     selectedCategory: Category,
+    onQueryChanged: (String) -> Unit,
+    onSearchBarActiveChanged: () -> Unit,
+    clearSearchQuery: () -> Unit,
+    clearSearchNews: () -> Unit,
     onRefreshClicked: () -> Unit,
     onNewsClicked: () -> Unit,
     onBookmarkClicked: () -> Unit,
     onCategoryClicked: (Category) -> Unit,
-    onSearchClicked: () -> Unit
+    onSearchClicked: (String) -> Unit
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -74,13 +83,92 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(key1 = uiState.searchErrorMessage) {
+        if (uiState.searchErrorMessage != null) {
+            Toast.makeText(
+                context,
+                context.getString(uiState.searchErrorMessage),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
+            if (uiState.isSearchBarActive) {
+                SearchBar(
+                    query = uiState.searchQuery,
+                    onQueryChange = onQueryChanged,
+                    onSearch = onSearchClicked,
+                    active = uiState.isSearchBarActive,
+                    onActiveChange = {},
+                    placeholder = { Text(text = stringResource(R.string.search_placeholder_text)) },
+                    leadingIcon = {
+                        IconButton(
+                            onClick = {
+                                if (uiState.searchQuery.isEmpty()) {
+                                    onSearchBarActiveChanged()
+                                    clearSearchNews()
+                                } else {
+                                    onSearchBarActiveChanged()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.arrowback_icon)
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                if (uiState.searchQuery.isNotEmpty()) {
+                                    clearSearchQuery()
+                                } else {
+                                    onSearchBarActiveChanged()
+                                    clearSearchNews()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.close_icon)
+                            )
+                        }
+                    }
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        when {
+                            uiState.searchNews.isNotEmpty() -> {
+                                NewsList(
+                                    news = uiState.searchNews,
+                                    contentPadding = PaddingValues(vertical = 16.dp),
+                                    onNewsClicked = onNewsClicked,
+                                    onBookmarkClicked = onBookmarkClicked
+                                )
+                            }
+                            uiState.isLoading -> {
+                                LoadingContent(modifier = Modifier.align(Alignment.Center))
+                            }
+                            uiState.searchErrorMessage != null -> {
+                                ErrorContent(onRefreshClicked = onRefreshClicked)
+                            }
+                            else -> {
+                                Text(
+                                    text = "Search something",
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
             Column {
                 CenteredHomeTopBar(
                     scrollBehavior = scrollBehavior,
-                    onSearchClicked = onSearchClicked
+                    onSearchClicked = onSearchBarActiveChanged
                 )
                 if (uiState.errorMessage == null) {
                     CategoryChips(
@@ -172,6 +260,7 @@ fun CategoryChips(
 @Composable
 fun NewsList(
     news: List<NewsItem>,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     onNewsClicked: () -> Unit,
     onBookmarkClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -180,6 +269,7 @@ fun NewsList(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
+        contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
@@ -218,7 +308,11 @@ fun HomeScreenPreview() {
             onNewsClicked = {},
             onBookmarkClicked = {},
             onCategoryClicked = {},
-            onSearchClicked = {}
+            onSearchClicked = {},
+            onQueryChanged = {},
+            onSearchBarActiveChanged = {},
+            clearSearchQuery = {},
+            clearSearchNews = {}
         )
     }
 }

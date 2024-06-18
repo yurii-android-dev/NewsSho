@@ -9,8 +9,10 @@ import com.yuriishcherbyna.newssho.domain.util.Result
 import com.yuriishcherbyna.newssho.presentation.util.toNetworkErrorMessageId
 import com.yuriishcherbyna.newssho.util.Constants.SELECTED_CATEGORY_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +21,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val newsRepository: NewsRepository,
     private val savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -46,11 +48,40 @@ class HomeViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is Result.Success -> {
-                       val news = result.data
-                       _uiState.update { it.copy(news = news, isLoading = false) }
+                        _uiState.update { it.copy(news = result.data, isLoading = false) }
                     }
                 }
+            }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    fun searchNews() {
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            if (_uiState.value.searchQuery.isNotEmpty()) {
+                newsRepository.searchNews(_uiState.value.searchQuery)
+                    .debounce(500)
+                    .collect { result ->
+                        when (result) {
+                            is Result.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        searchErrorMessage = result.error.toNetworkErrorMessageId(),
+                                        isLoading = false
+                                    )
+                                }
+                            }
+
+                            is Result.Success -> {
+                                _uiState.update {
+                                    it.copy(searchNews = result.data, isLoading = false)
+                                }
+                            }
+                        }
+                    }
             }
         }
     }
@@ -59,8 +90,30 @@ class HomeViewModel @Inject constructor(
         savedStateHandle["selected_category"] = category
     }
 
-    fun clearState() {
-        _uiState.value = HomeUiState()
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
+        searchNews()
+    }
+
+    fun toogleSearchBarActive() {
+        _uiState.update { it.copy(isSearchBarActive = !_uiState.value.isSearchBarActive) }
+    }
+
+    fun clearSearchQueryState() {
+        _uiState.update { it.copy(searchQuery = "") }
+    }
+
+    fun clearSearchNews() {
+        _uiState.update { it.copy(searchNews = emptyList()) }
+    }
+
+    fun clearLatestNewsState() {
+        _uiState.update {
+            it.copy(
+                news = emptyList(),
+                errorMessage = null
+            )
+        }
     }
 
 }

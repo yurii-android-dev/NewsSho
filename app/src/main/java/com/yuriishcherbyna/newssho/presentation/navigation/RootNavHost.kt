@@ -99,18 +99,26 @@ fun RootNavHost(
             HomeScreen(
                 uiState = homeUiState,
                 selectedCategory = selectedCategory,
+                onQueryChanged = homeViewModel::onSearchQueryChanged,
+                onSearchBarActiveChanged = homeViewModel::toogleSearchBarActive,
+                clearSearchQuery = homeViewModel::clearSearchQueryState,
+                clearSearchNews = homeViewModel::clearSearchNews,
+                onSearchClicked = {},
                 onCategoryClicked = { category ->
                     homeViewModel.onCategoryChanged(category)
-                    homeViewModel.clearState()
+                    homeViewModel.clearLatestNewsState()
                     homeViewModel.getLatestNews(category)
                 },
                 onRefreshClicked = {
-                    homeViewModel.clearState()
-                    homeViewModel.getLatestNews(selectedCategory)
+                    if (homeUiState.isSearchBarActive) {
+                        homeViewModel.searchNews()
+                    } else {
+                        homeViewModel.clearLatestNewsState()
+                        homeViewModel.getLatestNews(selectedCategory)
+                    }
                 },
                 onNewsClicked = {},
-                onBookmarkClicked = {},
-                onSearchClicked = {}
+                onBookmarkClicked = {}
             )
         }
     }
