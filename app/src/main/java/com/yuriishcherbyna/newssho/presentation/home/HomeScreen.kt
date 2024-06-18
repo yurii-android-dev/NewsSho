@@ -57,15 +57,8 @@ import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 fun HomeScreen(
     uiState: HomeUiState,
     selectedCategory: Category,
-    onQueryChanged: (String) -> Unit,
-    onSearchBarActiveChanged: () -> Unit,
-    clearSearchQuery: () -> Unit,
-    clearSearchNews: () -> Unit,
-    onRefreshClicked: () -> Unit,
-    onNewsClicked: () -> Unit,
-    onBookmarkClicked: () -> Unit,
-    onCategoryClicked: (Category) -> Unit,
-    onSearchClicked: (String) -> Unit
+    onAction: (HomeAction) -> Unit,
+    onNewsClicked: (String) -> Unit,
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -99,8 +92,8 @@ fun HomeScreen(
             if (uiState.isSearchBarActive) {
                 SearchBar(
                     query = uiState.searchQuery,
-                    onQueryChange = onQueryChanged,
-                    onSearch = onSearchClicked,
+                    onQueryChange = { query -> onAction(HomeAction.OnQueryChanged(query)) },
+                    onSearch = { onAction(HomeAction.OnSearchClicked) },
                     active = uiState.isSearchBarActive,
                     onActiveChange = {},
                     placeholder = { Text(text = stringResource(R.string.search_placeholder_text)) },
@@ -108,10 +101,10 @@ fun HomeScreen(
                         IconButton(
                             onClick = {
                                 if (uiState.searchQuery.isEmpty()) {
-                                    onSearchBarActiveChanged()
-                                    clearSearchNews()
+                                    onAction(HomeAction.OnSearchBarActiveChanged)
+                                    onAction(HomeAction.ClearSearchNews)
                                 } else {
-                                    onSearchBarActiveChanged()
+                                    onAction(HomeAction.OnSearchBarActiveChanged)
                                 }
                             }
                         ) {
@@ -125,10 +118,10 @@ fun HomeScreen(
                         IconButton(
                             onClick = {
                                 if (uiState.searchQuery.isNotEmpty()) {
-                                    clearSearchQuery()
+                                    onAction(HomeAction.ClearSearchQuery)
                                 } else {
-                                    onSearchBarActiveChanged()
-                                    clearSearchNews()
+                                    onAction(HomeAction.OnSearchBarActiveChanged)
+                                    onAction(HomeAction.ClearSearchNews)
                                 }
                             }
                         ) {
@@ -146,15 +139,22 @@ fun HomeScreen(
                                     news = uiState.searchNews,
                                     contentPadding = PaddingValues(vertical = 16.dp),
                                     onNewsClicked = onNewsClicked,
-                                    onBookmarkClicked = onBookmarkClicked
+                                    onBookmarkClicked = { newsItem ->
+                                        onAction(HomeAction.OnBookmarkClicked(newsItem))
+                                    }
                                 )
                             }
+
                             uiState.isLoading -> {
                                 LoadingContent(modifier = Modifier.align(Alignment.Center))
                             }
+
                             uiState.searchErrorMessage != null -> {
-                                ErrorContent(onRefreshClicked = onRefreshClicked)
+                                ErrorContent(onRefreshClicked = {
+                                    onAction(HomeAction.OnRefreshClicked)
+                                })
                             }
+
                             else -> {
                                 Text(
                                     text = "Search something",
@@ -168,12 +168,14 @@ fun HomeScreen(
             Column {
                 CenteredHomeTopBar(
                     scrollBehavior = scrollBehavior,
-                    onSearchClicked = onSearchBarActiveChanged
+                    onSearchClicked = { onAction(HomeAction.OnSearchBarActiveChanged) }
                 )
                 if (uiState.errorMessage == null) {
                     CategoryChips(
                         selectedCategory = selectedCategory,
-                        onCategoryClicked = onCategoryClicked
+                        onCategoryClicked = { category ->
+                            onAction(HomeAction.OnCategoryClicked(category))
+                        }
                     )
                 }
             }
@@ -191,12 +193,14 @@ fun HomeScreen(
                 NewsList(
                     news = uiState.news,
                     onNewsClicked = onNewsClicked,
-                    onBookmarkClicked = onBookmarkClicked
+                    onBookmarkClicked = { newsItem ->
+                        onAction(HomeAction.OnBookmarkClicked(newsItem))
+                    }
                 )
             } else if (uiState.isLoading) {
                 LoadingContent(modifier = Modifier.align(Alignment.Center))
             } else {
-                ErrorContent(onRefreshClicked = onRefreshClicked)
+                ErrorContent(onRefreshClicked = { onAction(HomeAction.OnRefreshClicked) })
             }
         }
     }
@@ -261,8 +265,8 @@ fun CategoryChips(
 fun NewsList(
     news: List<NewsItem>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onNewsClicked: () -> Unit,
-    onBookmarkClicked: () -> Unit,
+    onNewsClicked: (String) -> Unit,
+    onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -277,7 +281,7 @@ fun NewsList(
             key = { newsItem ->
                 newsItem.url + newsItem.publishedAt
             }
-        ) {newsResult ->
+        ) { newsResult ->
             NewsCard(
                 newsItem = newsResult,
                 isBookmarked = false,
@@ -304,15 +308,8 @@ fun HomeScreenPreview() {
         HomeScreen(
             uiState = HomeUiState(news = news),
             selectedCategory = Category.GENERAL,
-            onRefreshClicked = {},
-            onNewsClicked = {},
-            onBookmarkClicked = {},
-            onCategoryClicked = {},
-            onSearchClicked = {},
-            onQueryChanged = {},
-            onSearchBarActiveChanged = {},
-            clearSearchQuery = {},
-            clearSearchNews = {}
+            onAction = {},
+            onNewsClicked = {}
         )
     }
 }

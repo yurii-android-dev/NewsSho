@@ -35,7 +35,31 @@ class HomeViewModel @Inject constructor(
         getLatestNews(selectedCategory.value)
     }
 
-    fun getLatestNews(category: Category) {
+    fun onAction(action: HomeAction) {
+        when (action) {
+            HomeAction.ClearSearchNews -> { clearSearchNews() }
+            HomeAction.ClearSearchQuery -> { clearSearchQueryState() }
+            is HomeAction.OnCategoryClicked -> {
+                onCategoryChanged(action.category)
+                clearLatestNewsState()
+                getLatestNews(action.category)
+            }
+            is HomeAction.OnQueryChanged -> { onSearchQueryChanged(action.query) }
+            HomeAction.OnRefreshClicked -> {
+                if (_uiState.value.isSearchBarActive) {
+                    searchNews()
+                } else {
+                    clearLatestNewsState()
+                    getLatestNews(selectedCategory.value)
+                }
+            }
+            HomeAction.OnSearchBarActiveChanged -> { toogleSearchBarActive() }
+            HomeAction.OnSearchClicked -> {}
+            is HomeAction.OnBookmarkClicked -> {}
+        }
+    }
+
+    private fun getLatestNews(category: Category) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             newsRepository.getLatestNews(category).collect { result ->
@@ -58,7 +82,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(FlowPreview::class)
-    fun searchNews() {
+    private fun searchNews() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             if (_uiState.value.searchQuery.isNotEmpty()) {
@@ -86,28 +110,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onCategoryChanged(category: Category) {
+    private fun onCategoryChanged(category: Category) {
         savedStateHandle["selected_category"] = category
     }
 
-    fun onSearchQueryChanged(query: String) {
+    private fun onSearchQueryChanged(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         searchNews()
     }
 
-    fun toogleSearchBarActive() {
+    private fun toogleSearchBarActive() {
         _uiState.update { it.copy(isSearchBarActive = !_uiState.value.isSearchBarActive) }
     }
 
-    fun clearSearchQueryState() {
+    private fun clearSearchQueryState() {
         _uiState.update { it.copy(searchQuery = "") }
     }
 
-    fun clearSearchNews() {
+    private fun clearSearchNews() {
         _uiState.update { it.copy(searchNews = emptyList()) }
     }
 
-    fun clearLatestNewsState() {
+    private fun clearLatestNewsState() {
         _uiState.update {
             it.copy(
                 news = emptyList(),

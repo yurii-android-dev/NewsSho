@@ -32,13 +32,13 @@ import com.yuriishcherbyna.newssho.domain.model.NewsItem
 fun NewsCard(
     newsItem: NewsItem,
     isBookmarked: Boolean,
-    onNewsClicked: () -> Unit,
-    onBookmarkClicked: () -> Unit,
+    onNewsClicked: (String) -> Unit,
+    onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     Card(
-        onClick = onNewsClicked,
+        onClick = { onNewsClicked(newsItem.url) },
         modifier = modifier
             .fillMaxWidth()
             .height(200.dp),
@@ -80,7 +80,7 @@ fun NewsCard(
                 PublishedAtAndBookmarkButton(
                     publishedAt = newsItem.publishedAt,
                     isBookmarked = isBookmarked,
-                    onBookmarkClicked = onBookmarkClicked
+                    onBookmarkClicked = { onBookmarkClicked(newsItem) }
                 )
             }
         }
