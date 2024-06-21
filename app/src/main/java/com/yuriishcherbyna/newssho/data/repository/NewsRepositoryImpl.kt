@@ -25,7 +25,9 @@ class NewsRepositoryImpl @Inject constructor(
                 val response = api.getLatestNews(
                     country = getCountryFromLocale(),
                     category = category
-                ).articles.map { it.toNewsItem() }
+                ).articles
+                    .filter { !it.url.contains("remove") }
+                    .map { it.toNewsItem() }
                 emit(Result.Success(response))
             } catch (e: HttpException) {
                 val error = httpCodeToNetworkError(e.code())
@@ -39,7 +41,9 @@ class NewsRepositoryImpl @Inject constructor(
     override fun searchNews(query: String): Flow<Result<List<NewsItem>, DataError.Network>> {
         return flow {
             try {
-                val response = api.searchNews(query = query).articles.map { it.toNewsItem() }
+                val response = api.searchNews(query = query).articles
+                    .filter { !it.url.contains("remove") }
+                    .map { it.toNewsItem() }
                 emit(Result.Success(response))
             } catch (e: HttpException) {
                 val error = httpCodeToNetworkError(e.code())
