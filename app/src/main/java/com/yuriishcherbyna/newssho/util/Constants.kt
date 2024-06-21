@@ -9,4 +9,8 @@ object Constants {
     // SavedStateHandle key
     const val SELECTED_CATEGORY_KEY = "selected_category"
 
+    // Details Screen Arguments
+    const val DETAILS_SCREEN_URL_ARG = "newsUrl"
+    const val DETAILS_SCREEN_TITLE_ARG = "newsTitle"
+
 }

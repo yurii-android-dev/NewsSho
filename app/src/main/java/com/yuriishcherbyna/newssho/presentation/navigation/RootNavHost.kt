@@ -7,16 +7,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.yuriishcherbyna.newssho.R
+import com.yuriishcherbyna.newssho.presentation.details.DetailsScreen
 import com.yuriishcherbyna.newssho.presentation.home.HomeScreen
 import com.yuriishcherbyna.newssho.presentation.home.HomeViewModel
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInScreen
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInViewModel
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeScreen
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeViewModel
+import com.yuriishcherbyna.newssho.util.Constants.DETAILS_SCREEN_TITLE_ARG
+import com.yuriishcherbyna.newssho.util.Constants.DETAILS_SCREEN_URL_ARG
+import java.net.URLEncoder
 
 @Composable
 fun RootNavHost(
@@ -100,7 +106,27 @@ fun RootNavHost(
                 uiState = homeUiState,
                 selectedCategory = selectedCategory,
                 onAction = homeViewModel::onAction,
-                onNewsClicked = {}
+                onNewsClicked = { url, title ->
+                    val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                    navController.navigate(Screens.Details.passUrlAndTitle(encodedUrl, title))
+                }
+            )
+        }
+        composable(
+            route = Screens.Details.route,
+            arguments = listOf(
+                navArgument(DETAILS_SCREEN_URL_ARG) { type = NavType.StringType },
+                navArgument(DETAILS_SCREEN_TITLE_ARG) { type = NavType.StringType }
+            )
+        ) {
+
+            val url = it.arguments?.getString(DETAILS_SCREEN_URL_ARG)
+            val title = it.arguments?.getString(DETAILS_SCREEN_TITLE_ARG)
+
+            DetailsScreen(
+                url = url,
+                title = title,
+                onNavigateBackClicked = { navController.navigateUp() }
             )
         }
     }

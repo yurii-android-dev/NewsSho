@@ -32,13 +32,13 @@ import com.yuriishcherbyna.newssho.domain.model.NewsItem
 fun NewsCard(
     newsItem: NewsItem,
     isBookmarked: Boolean,
-    onNewsClicked: (String) -> Unit,
+    onNewsClicked: (String, String) -> Unit,
     onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     Card(
-        onClick = { onNewsClicked(newsItem.url) },
+        onClick = { onNewsClicked(newsItem.url, newsItem.title) },
         modifier = modifier
             .fillMaxWidth()
             .height(200.dp),

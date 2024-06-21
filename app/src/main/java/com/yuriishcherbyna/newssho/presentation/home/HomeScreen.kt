@@ -58,7 +58,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     selectedCategory: Category,
     onAction: (HomeAction) -> Unit,
-    onNewsClicked: (String) -> Unit,
+    onNewsClicked: (String, String) -> Unit,
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -265,7 +265,7 @@ fun CategoryChips(
 fun NewsList(
     news: List<NewsItem>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onNewsClicked: (String) -> Unit,
+    onNewsClicked: (String, String) -> Unit,
     onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -309,7 +309,7 @@ fun HomeScreenPreview() {
             uiState = HomeUiState(news = news),
             selectedCategory = Category.GENERAL,
             onAction = {},
-            onNewsClicked = {}
+            onNewsClicked = {_, _ ->}
         )
     }
 }
