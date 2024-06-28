@@ -156,10 +156,7 @@ fun HomeScreen(
                             }
 
                             else -> {
-                                Text(
-                                    text = "Search something",
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
+                                InitialSearchScreen()
                             }
                         }
                     }
