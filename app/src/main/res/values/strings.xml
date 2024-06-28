@@ -24,4 +24,9 @@
     <string name="arrowback_icon">ArrowBack icon</string>
     <string name="close_icon">Close icon</string>
     <string name="search_placeholder_text">Type your search query</string>
+    <string name="home_label">Home</string>
+    <string name="bookmarks_label">Bookmarks</string>
+    <string name="profile_label">Profile</string>
+    <string name="failed_to_fetch_bookmarks_errors">Failed to fetch bookmarks error</string>
+    <string name="failed_to_toogle_bookmarks_errors">Failed to toogle bookmarks error</string>
 </resources>
