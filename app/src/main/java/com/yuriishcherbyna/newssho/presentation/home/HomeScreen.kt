@@ -2,18 +2,16 @@ package com.yuriishcherbyna.newssho.presentation.home
 
 import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -48,9 +46,9 @@ import com.yuriishcherbyna.newssho.data.remote.dto.Category
 import com.yuriishcherbyna.newssho.domain.model.NewsItem
 import com.yuriishcherbyna.newssho.presentation.components.ErrorContent
 import com.yuriishcherbyna.newssho.presentation.components.LoadingContent
+import com.yuriishcherbyna.newssho.presentation.components.NewsList
 import com.yuriishcherbyna.newssho.presentation.home.components.Chip
 import com.yuriishcherbyna.newssho.presentation.home.components.InitialSearchScreen
-import com.yuriishcherbyna.newssho.presentation.home.components.NewsCard
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +57,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     selectedCategory: Category,
     onAction: (HomeAction) -> Unit,
-    onNewsClicked: (String, String) -> Unit,
+    onNewsClicked: (String, String) -> Unit
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -183,12 +181,13 @@ fun HomeScreen(
         },
         snackbarHost = {
             SnackbarHost(snackbarHostState)
-        }
+        },
+        contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
+                .fillMaxSize()
         ) {
             if (uiState.news.isNotEmpty()) {
                 NewsList(
@@ -259,41 +258,6 @@ fun CategoryChips(
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
-        }
-    }
-}
-
-@Composable
-fun NewsList(
-    news: List<NewsItem>,
-    bookmarksNews: List<NewsItem>,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    onNewsClicked: (String, String) -> Unit,
-    onBookmarkClicked: (NewsItem) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(
-            items = news,
-            key = { newsItem ->
-                newsItem.url
-            }
-        ) { newsResult ->
-
-            val isBookmarked = bookmarksNews.find { it.url == newsResult.url }
-
-            NewsCard(
-                newsItem = newsResult,
-                isBookmarked = isBookmarked != null,
-                onNewsClicked = onNewsClicked,
-                onBookmarkClicked = onBookmarkClicked
-            )
         }
     }
 }

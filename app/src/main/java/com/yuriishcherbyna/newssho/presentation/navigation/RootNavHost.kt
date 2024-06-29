@@ -1,7 +1,8 @@
 package com.yuriishcherbyna.newssho.presentation.navigation
 
-import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,9 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -28,6 +31,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.yuriishcherbyna.newssho.R
+import com.yuriishcherbyna.newssho.presentation.bookmarks.BookmarksScreen
+import com.yuriishcherbyna.newssho.presentation.bookmarks.BookmarksViewModel
 import com.yuriishcherbyna.newssho.presentation.details.DetailsScreen
 import com.yuriishcherbyna.newssho.presentation.home.HomeScreen
 import com.yuriishcherbyna.newssho.presentation.home.HomeViewModel
@@ -39,7 +44,6 @@ import com.yuriishcherbyna.newssho.util.Constants.DETAILS_SCREEN_TITLE_ARG
 import com.yuriishcherbyna.newssho.util.Constants.DETAILS_SCREEN_URL_ARG
 import java.net.URLEncoder
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RootNavHost(
     startDestination: String
@@ -93,11 +97,13 @@ fun RootNavHost(
                     }
                 }
             }
-        }
-    ) {
+        },
+        contentWindowInsets = WindowInsets(0.dp)
+    ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination
+            startDestination = startDestination,
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(
                 route = Screens.Welcome.route
@@ -196,7 +202,17 @@ fun RootNavHost(
             composable(
                 route = Screens.Bookmarks.route
             ) {
-                Text(text = "Bookmarks")
+                val bookmarksViewModel: BookmarksViewModel = hiltViewModel()
+                val uiState by bookmarksViewModel.uiState.collectAsState()
+
+                BookmarksScreen(
+                    uiState = uiState,
+                    onAction = bookmarksViewModel::onAction,
+                    onNewsClicked = { url, title ->
+                        val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                        navController.navigate(Screens.Details.passUrlAndTitle(encodedUrl, title))
+                    }
+                )
             }
             composable(
                 route = Screens.Profile.route

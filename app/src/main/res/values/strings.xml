@@ -30,4 +30,8 @@
     <string name="failed_to_fetch_bookmarks_errors">Failed to fetch bookmarks error</string>
     <string name="failed_to_toogle_bookmarks_errors">Failed to toogle bookmarks error</string>
     <string name="search_whatever_you_want">Search whatever you want</string>
+    <string name="empty_bookmarks_content_text">Oops. It looks like you don\'t have saved bookmarks yet</string>
+    <string name="bookmark_successfully_deleted">Bookmark successfully deleted</string>
+    <string name="undo">Undo</string>
+    <string name="bookmarks">Bookmarks</string>
 </resources>

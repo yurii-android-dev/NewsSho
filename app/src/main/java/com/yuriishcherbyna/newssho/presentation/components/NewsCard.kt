@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.newssho.presentation.home.components
+package com.yuriishcherbyna.newssho.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.domain.model.NewsItem
+import com.yuriishcherbyna.newssho.presentation.home.components.PublishedAtAndBookmarkButton
 
 @Composable
 fun NewsCard(
