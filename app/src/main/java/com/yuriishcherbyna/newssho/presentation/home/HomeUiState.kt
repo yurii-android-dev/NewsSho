@@ -5,6 +5,7 @@ import com.yuriishcherbyna.newssho.domain.model.NewsItem
 
 data class HomeUiState(
     val news: List<NewsItem> = emptyList(),
+    val bookmarksNews: List<NewsItem> = emptyList(),
     val searchNews: List<NewsItem> = emptyList(),
     val isLoading: Boolean = false,
     @StringRes val errorMessage: Int? = null,

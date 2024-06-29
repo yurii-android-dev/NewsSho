@@ -13,6 +13,8 @@ sealed class HomeAction {
 
     data object ClearSearchNews: HomeAction()
 
+    data object ClearErrorMessage: HomeAction()
+
     data object OnSearchClicked: HomeAction()
 
     data class OnCategoryClicked(val category: Category): HomeAction()

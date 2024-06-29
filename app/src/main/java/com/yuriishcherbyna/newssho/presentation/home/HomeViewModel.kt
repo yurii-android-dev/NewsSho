@@ -3,7 +3,10 @@ package com.yuriishcherbyna.newssho.presentation.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
+import com.yuriishcherbyna.newssho.domain.model.NewsItem
+import com.yuriishcherbyna.newssho.domain.repository.BookmarksNewsRepository
 import com.yuriishcherbyna.newssho.domain.repository.NewsRepository
 import com.yuriishcherbyna.newssho.domain.util.Result
 import com.yuriishcherbyna.newssho.presentation.util.toNetworkErrorMessageId
@@ -20,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val newsRepository: NewsRepository,
+    private val bookmarksNewsRepository: BookmarksNewsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -39,6 +43,7 @@ class HomeViewModel @Inject constructor(
         when (action) {
             HomeAction.ClearSearchNews -> { clearSearchNews() }
             HomeAction.ClearSearchQuery -> { clearSearchQueryState() }
+            HomeAction.ClearErrorMessage -> { clearErrorMessageState() }
             is HomeAction.OnCategoryClicked -> {
                 onCategoryChanged(action.category)
                 clearLatestNewsState()
@@ -55,7 +60,7 @@ class HomeViewModel @Inject constructor(
             }
             HomeAction.OnSearchBarActiveChanged -> { toogleSearchBarActive() }
             HomeAction.OnSearchClicked -> {}
-            is HomeAction.OnBookmarkClicked -> {}
+            is HomeAction.OnBookmarkClicked -> { toogleBookmark(action.newsItem) }
         }
     }
 
@@ -79,6 +84,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+        getBookmarksNews()
     }
 
     @OptIn(FlowPreview::class)
@@ -106,6 +112,35 @@ class HomeViewModel @Inject constructor(
                             }
                         }
                     }
+            }
+        }
+    }
+
+    private fun toogleBookmark(newsItem: NewsItem) {
+        viewModelScope.launch {
+            when (bookmarksNewsRepository.toogleBookmark(newsItem)) {
+                is Result.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessage = R.string.failed_to_toogle_bookmarks_errors)
+                    }
+                }
+                is Result.Success -> {}
+            }
+            getBookmarksNews()
+        }
+    }
+
+    private fun getBookmarksNews() {
+        viewModelScope.launch {
+            when (val result = bookmarksNewsRepository.getAllNews()) {
+                is Result.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessage = R.string.failed_to_fetch_bookmarks_errors)
+                    }
+                }
+                is Result.Success -> {
+                    _uiState.update { it.copy(bookmarksNews = result.data) }
+                }
             }
         }
     }
@@ -139,5 +174,7 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    private fun clearErrorMessageState() { _uiState.update { it.copy(errorMessage = null) } }
 
 }

@@ -49,6 +49,7 @@ import com.yuriishcherbyna.newssho.domain.model.NewsItem
 import com.yuriishcherbyna.newssho.presentation.components.ErrorContent
 import com.yuriishcherbyna.newssho.presentation.components.LoadingContent
 import com.yuriishcherbyna.newssho.presentation.home.components.Chip
+import com.yuriishcherbyna.newssho.presentation.home.components.InitialSearchScreen
 import com.yuriishcherbyna.newssho.presentation.home.components.NewsCard
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 
@@ -73,6 +74,7 @@ fun HomeScreen(
                 message = context.getString(uiState.errorMessage),
                 duration = SnackbarDuration.Long
             )
+            onAction(HomeAction.ClearErrorMessage)
         }
     }
 
@@ -83,6 +85,7 @@ fun HomeScreen(
                 context.getString(uiState.searchErrorMessage),
                 Toast.LENGTH_LONG
             ).show()
+            onAction(HomeAction.ClearErrorMessage)
         }
     }
 
@@ -137,6 +140,7 @@ fun HomeScreen(
                             uiState.searchNews.isNotEmpty() -> {
                                 NewsList(
                                     news = uiState.searchNews,
+                                    bookmarksNews = uiState.bookmarksNews,
                                     contentPadding = PaddingValues(vertical = 16.dp),
                                     onNewsClicked = onNewsClicked,
                                     onBookmarkClicked = { newsItem ->
@@ -189,6 +193,7 @@ fun HomeScreen(
             if (uiState.news.isNotEmpty()) {
                 NewsList(
                     news = uiState.news,
+                    bookmarksNews = uiState.bookmarksNews,
                     onNewsClicked = onNewsClicked,
                     onBookmarkClicked = { newsItem ->
                         onAction(HomeAction.OnBookmarkClicked(newsItem))
@@ -261,6 +266,7 @@ fun CategoryChips(
 @Composable
 fun NewsList(
     news: List<NewsItem>,
+    bookmarksNews: List<NewsItem>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onNewsClicked: (String, String) -> Unit,
     onBookmarkClicked: (NewsItem) -> Unit,
@@ -276,12 +282,15 @@ fun NewsList(
         items(
             items = news,
             key = { newsItem ->
-                newsItem.url + newsItem.publishedAt
+                newsItem.url
             }
         ) { newsResult ->
+
+            val isBookmarked = bookmarksNews.find { it.url == newsResult.url }
+
             NewsCard(
                 newsItem = newsResult,
-                isBookmarked = false,
+                isBookmarked = isBookmarked != null,
                 onNewsClicked = onNewsClicked,
                 onBookmarkClicked = onBookmarkClicked
             )
