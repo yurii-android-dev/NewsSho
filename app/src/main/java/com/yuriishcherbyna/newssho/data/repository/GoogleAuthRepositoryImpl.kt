@@ -37,7 +37,7 @@ class GoogleAuthRepositoryImpl @Inject constructor(
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
             .build()
-
+        Log.d(TAG, "Get Credential Request")
         return try {
             val result = credentialManager.getCredential(
                 request = request,
@@ -45,6 +45,7 @@ class GoogleAuthRepositoryImpl @Inject constructor(
             )
             val credential = result.credential
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            Log.d(TAG, "Get google id token credential")
             googleIdTokenCredential.idToken
         } catch (e: GetCredentialException) {
             Log.d(TAG, e.message.toString())
@@ -58,7 +59,9 @@ class GoogleAuthRepositoryImpl @Inject constructor(
     override suspend fun signIn(token: String): SignInResult {
         return try {
             val authProvider = GoogleAuthProvider.getCredential(token, null)
+            Log.d(TAG, "Get authCredential")
             val user = auth.signInWithCredential(authProvider).await().user
+            Log.d(TAG, "Get user: ${user?.uid}")
             SignInResult(
                 userData = user?.run {
                     UserData(
@@ -89,17 +92,20 @@ class GoogleAuthRepositoryImpl @Inject constructor(
         try {
             auth.signOut()
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            Log.d(TAG, "Successfully logout user")
         } catch (e: Exception) {
-            Log.d(TAG, e.message.toString())
+            Log.d(TAG, "Logout error. ${e.message.toString()}")
         }
     }
 
     override suspend fun deleteAccount() {
         try {
             auth.currentUser?.delete()
-            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            Log.d(TAG, "Successfully deleted account")
+            logout()
+            Log.d(TAG, "Successfully logout user")
         } catch (e: Exception) {
-            Log.d(TAG, e.message.toString())
+            Log.d(TAG, "Delete account error. ${e.message.toString()}")
         }
     }
 }
