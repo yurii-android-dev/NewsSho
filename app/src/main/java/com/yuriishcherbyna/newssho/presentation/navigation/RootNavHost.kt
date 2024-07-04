@@ -31,6 +31,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.yuriishcherbyna.newssho.R
+import com.yuriishcherbyna.newssho.presentation.account.AccountScreen
+import com.yuriishcherbyna.newssho.presentation.account.AccountViewModel
 import com.yuriishcherbyna.newssho.presentation.bookmarks.BookmarksScreen
 import com.yuriishcherbyna.newssho.presentation.bookmarks.BookmarksViewModel
 import com.yuriishcherbyna.newssho.presentation.details.DetailsScreen
@@ -66,7 +68,7 @@ fun RootNavHost(
     val items = listOf(
         Screens.Home,
         Screens.Bookmarks,
-        Screens.Profile
+        Screens.Account
     )
 
     Scaffold(
@@ -217,7 +219,32 @@ fun RootNavHost(
             composable(
                 route = Screens.Profile.route
             ) {
-                Text(text = "Profile")
+                val accountViewModel: AccountViewModel = hiltViewModel()
+                val userData by accountViewModel.userData.collectAsState()
+                val isLoading by accountViewModel.isLoading.collectAsState()
+
+                AccountScreen(
+                    userData = userData,
+                    isLoading = isLoading,
+                    showDialog = accountViewModel.showDialog,
+                    onLogOutClicked = {
+                        accountViewModel.logOut()
+                        navController.navigate(Screens.SignIn.route) {
+                            popUpTo(Screens.Account.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onDeleteAccountClicked = {
+                        accountViewModel.deleteAccount()
+                        navController.navigate(Screens.SignIn.route) {
+                            popUpTo(Screens.Account.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    changeShowDialogValue = accountViewModel::changeShowDialogValue
+                )
             }
         }
     }

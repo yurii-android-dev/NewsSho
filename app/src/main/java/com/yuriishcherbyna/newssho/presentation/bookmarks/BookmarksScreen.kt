@@ -4,14 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,13 +16,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.presentation.bookmarks.components.EmptyContent
+import com.yuriishcherbyna.newssho.presentation.components.CenteredTopBar
 import com.yuriishcherbyna.newssho.presentation.components.LoadingContent
 import com.yuriishcherbyna.newssho.presentation.components.NewsList
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
@@ -50,7 +45,7 @@ fun BookmarksScreen(
     }
 
     Scaffold(
-        topBar = { CenteredBookmarksTopBar() },
+        topBar = { CenteredTopBar(nameId = R.string.bookmarks) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState)},
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
@@ -90,20 +85,6 @@ fun BookmarksScreen(
              }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CenteredBookmarksTopBar() {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(id = R.string.bookmarks),
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    )
 }
 
 @Preview(showBackground = true, apiLevel = 33)

@@ -44,9 +44,9 @@ sealed class Screens(
         icon = R.drawable.ic_bookmark_24
     )
 
-    data object Profile : Screens(
+    data object Account : Screens(
         route = "profile_screen",
-        label = R.string.profile_label,
+        label = R.string.account_label,
         icon = R.drawable.ic_account_circle_24
     )
 

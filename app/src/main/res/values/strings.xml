@@ -26,7 +26,7 @@
     <string name="search_placeholder_text">Type your search query</string>
     <string name="home_label">Home</string>
     <string name="bookmarks_label">Bookmarks</string>
-    <string name="profile_label">Profile</string>
+    <string name="account_label">Account</string>
     <string name="failed_to_fetch_bookmarks_errors">Failed to fetch bookmarks error</string>
     <string name="failed_to_toogle_bookmarks_errors">Failed to toogle bookmarks error</string>
     <string name="search_whatever_you_want">Search whatever you want</string>
@@ -34,4 +34,13 @@
     <string name="bookmark_successfully_deleted">Bookmark successfully deleted</string>
     <string name="undo">Undo</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="account">Account</string>
+    <string name="account_image">Account image</string>
+    <string name="logout">Log Out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="no_name">No name</string>
+    <string name="delete_account_alert_dialog_title">Are you sure you want to delete your account?</string>
+    <string name="delete_account_alert_dialog_text">If you do this you will lose all your saved bookmarks and it can not be restored.</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>
