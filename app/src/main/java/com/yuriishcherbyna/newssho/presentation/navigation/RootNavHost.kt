@@ -71,6 +71,14 @@ fun RootNavHost(
         Screens.Account
     )
 
+    val signInScreen = currentBackStackEntry?.destination?.hierarchy?.any {
+        it.route == Screens.SignIn.route
+    } == true
+
+    if (signInScreen) {
+        selectedItem = 0
+    }
+
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
@@ -217,7 +225,7 @@ fun RootNavHost(
                 )
             }
             composable(
-                route = Screens.Profile.route
+                route = Screens.Account.route
             ) {
                 val accountViewModel: AccountViewModel = hiltViewModel()
                 val userData by accountViewModel.userData.collectAsState()
