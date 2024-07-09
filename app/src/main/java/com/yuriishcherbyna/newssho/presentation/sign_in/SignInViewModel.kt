@@ -1,5 +1,6 @@
 package com.yuriishcherbyna.newssho.presentation.sign_in
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuriishcherbyna.newssho.domain.model.SignInResult
@@ -30,10 +31,10 @@ class SignInViewModel @Inject constructor(
 
     fun getSignedInUser() = authRepository.getUserData()
 
-    fun signInWithGoogle() {
+    fun signInWithGoogle(activityContext: Context) {
         _uiState.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch {
-            val tokenResult = authRepository.getGoogleToken()
+            val tokenResult = authRepository.getGoogleToken(activityContext)
             tokenResult?.let { token ->
                 val result = authRepository.signIn(token)
                 onSignedInResult(result)

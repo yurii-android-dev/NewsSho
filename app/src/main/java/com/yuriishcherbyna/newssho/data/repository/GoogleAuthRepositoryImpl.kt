@@ -27,7 +27,7 @@ class GoogleAuthRepositoryImpl @Inject constructor(
     private val credentialManager: CredentialManager
 ): AuthRepository {
 
-    override suspend fun getGoogleToken(): String? {
+    override suspend fun getGoogleToken(activityContext: Context): String? {
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
             .setServerClientId(context.getString(R.string.web_client_id))
@@ -41,17 +41,17 @@ class GoogleAuthRepositoryImpl @Inject constructor(
         return try {
             val result = credentialManager.getCredential(
                 request = request,
-                context = context
+                context = activityContext
             )
             val credential = result.credential
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             Log.d(TAG, "Get google id token credential")
             googleIdTokenCredential.idToken
         } catch (e: GetCredentialException) {
-            Log.d(TAG, e.message.toString())
+            Log.d(TAG, "GetCredentialException: ${e.message}, ${e.type}")
             null
         } catch (e: GoogleIdTokenParsingException) {
-            Log.d(TAG, e.message.toString())
+            Log.d(TAG, "Received an invalid google id token response: ${e.message}")
             null
         }
     }

@@ -40,6 +40,7 @@ import com.yuriishcherbyna.newssho.presentation.home.HomeScreen
 import com.yuriishcherbyna.newssho.presentation.home.HomeViewModel
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInScreen
 import com.yuriishcherbyna.newssho.presentation.sign_in.SignInViewModel
+import com.yuriishcherbyna.newssho.presentation.util.findActivity
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeScreen
 import com.yuriishcherbyna.newssho.presentation.welcome.WelcomeViewModel
 import com.yuriishcherbyna.newssho.util.Constants.DETAILS_SCREEN_TITLE_ARG
@@ -140,6 +141,7 @@ fun RootNavHost(
                 val uiState by signInViewModel.uiState.collectAsState()
 
                 val context = LocalContext.current
+                val activity = context.findActivity()
 
                 LaunchedEffect(key1 = Unit) {
                     if (signInViewModel.getSignedInUser() != null) {
@@ -170,7 +172,7 @@ fun RootNavHost(
                 SignInScreen(
                     uiState = uiState,
                     onSignInClick = {
-                        signInViewModel.signInWithGoogle()
+                        signInViewModel.signInWithGoogle(activity)
                     }
                 )
             }
