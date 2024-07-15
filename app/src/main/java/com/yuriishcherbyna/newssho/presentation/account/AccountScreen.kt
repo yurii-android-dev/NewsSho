@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.domain.model.UserData
 import com.yuriishcherbyna.newssho.presentation.account.components.AccountImage
-import com.yuriishcherbyna.newssho.presentation.account.components.DeleteAccountConfirmationDialog
 import com.yuriishcherbyna.newssho.presentation.account.components.LogOutAndDeleteAccountButtons
 import com.yuriishcherbyna.newssho.presentation.components.CenteredTopBar
+import com.yuriishcherbyna.newssho.presentation.components.ConfirmationDialog
 import com.yuriishcherbyna.newssho.presentation.components.LoadingContent
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
 
@@ -55,8 +55,9 @@ fun AccountScreen(
             }
         }
         if (showDialog) {
-            DeleteAccountConfirmationDialog(
-                showDialog = showDialog,
+            ConfirmationDialog(
+                titleText = R.string.delete_account_alert_dialog_title,
+                descriptionText = R.string.delete_account_alert_dialog_text,
                 onDismissRequest = { changeShowDialogValue(false) },
                 onCancelClicked = { changeShowDialogValue(false) },
                 onConfirmClicked = {

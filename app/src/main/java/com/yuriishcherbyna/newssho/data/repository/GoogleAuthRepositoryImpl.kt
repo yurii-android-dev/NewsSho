@@ -100,10 +100,8 @@ class GoogleAuthRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount() {
         try {
-            auth.currentUser?.delete()
+            auth.currentUser?.delete()?.await()
             Log.d(TAG, "Successfully deleted account")
-            logout()
-            Log.d(TAG, "Successfully logout user")
         } catch (e: Exception) {
             Log.d(TAG, "Delete account error. ${e.message.toString()}")
         }

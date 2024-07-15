@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuriishcherbyna.newssho.domain.model.UserData
 import com.yuriishcherbyna.newssho.domain.repository.AuthRepository
+import com.yuriishcherbyna.newssho.domain.repository.BookmarksNewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val bookmarksNewsRepository: BookmarksNewsRepository
 ): ViewModel(){
 
     private val _userData = MutableStateFlow<UserData?>(null)
@@ -25,6 +27,9 @@ class AccountViewModel @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
 
     var showDialog by mutableStateOf(false)
+        private set
+
+    var isUserDeleted by mutableStateOf(false)
         private set
 
     init {
@@ -47,7 +52,10 @@ class AccountViewModel @Inject constructor(
 
     fun deleteAccount() {
         viewModelScope.launch {
+            bookmarksNewsRepository.deleteAllNews(20)
             authRepository.deleteAccount()
+            authRepository.logout()
+            isUserDeleted = true
         }
     }
 

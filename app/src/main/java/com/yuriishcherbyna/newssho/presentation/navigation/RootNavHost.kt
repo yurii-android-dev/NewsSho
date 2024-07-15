@@ -234,6 +234,16 @@ fun RootNavHost(
                 val userData by accountViewModel.userData.collectAsState()
                 val isLoading by accountViewModel.isLoading.collectAsState()
 
+                LaunchedEffect(accountViewModel.isUserDeleted) {
+                    if (accountViewModel.isUserDeleted) {
+                        navController.navigate(Screens.SignIn.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                }
+
                 AccountScreen(
                     userData = userData,
                     isLoading = isLoading,
@@ -248,11 +258,6 @@ fun RootNavHost(
                     },
                     onDeleteAccountClicked = {
                         accountViewModel.deleteAccount()
-                        navController.navigate(Screens.SignIn.route) {
-                            popUpTo(Screens.Account.route) {
-                                inclusive = true
-                            }
-                        }
                     },
                     changeShowDialogValue = accountViewModel::changeShowDialogValue
                 )
