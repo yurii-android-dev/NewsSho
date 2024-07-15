@@ -1,5 +1,8 @@
 package com.yuriishcherbyna.newssho.presentation.bookmarks
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuriishcherbyna.newssho.R
@@ -21,6 +24,9 @@ class BookmarksViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookmarksUiState())
     val uiState = _uiState.asStateFlow()
 
+    var showDialog by mutableStateOf(false)
+        private set
+
     init {
         getBookmarksNews()
     }
@@ -31,6 +37,15 @@ class BookmarksViewModel @Inject constructor(
                 bookmarksAction.newsItem.id?.let { deleteBookmark(it) }
             }
             is BookmarksAction.OnUndoClicked -> { saveNews(bookmarksAction.newsItem) }
+            BookmarksAction.DeleteBookmarksClicked -> {
+                toogleShowDialogValue()
+            }
+            BookmarksAction.ConfirmButtonClicked -> {
+                toogleShowDialogValue()
+                deleteBookmarks()
+            }
+            BookmarksAction.ToogleShowDialogValue -> { toogleShowDialogValue() }
+            BookmarksAction.ClearErrorMessageState -> { clearErrorMessageState() }
         }
     }
 
@@ -62,6 +77,38 @@ class BookmarksViewModel @Inject constructor(
             bookmarksNewsRepository.deleteNews(bookmarkId)
             getBookmarksNews()
         }
+    }
+
+    private fun deleteBookmarks() {
+        viewModelScope.launch {
+            if (_uiState.value.bookmarksNews.isNotEmpty()) {
+                when (val result = bookmarksNewsRepository.deleteAllNews(20)) {
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(errorMessage = R.string.bookmarks_successfully_deleted)
+                        }
+                        getBookmarksNews()
+                    }
+                    is Result.Error -> {
+                        _uiState.update {
+                            it.copy(errorMessage = R.string.unknown_error)
+                        }
+                    }
+                }
+            } else {
+                _uiState.update {
+                    it.copy(errorMessage = R.string.empty_bookmarks_message)
+                }
+            }
+        }
+    }
+
+    private fun toogleShowDialogValue() {
+        showDialog = !showDialog
+    }
+
+    private fun clearErrorMessageState() {
+        _uiState.update { it.copy(errorMessage = null) }
     }
 
 }

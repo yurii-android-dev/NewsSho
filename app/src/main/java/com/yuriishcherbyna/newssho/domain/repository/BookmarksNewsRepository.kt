@@ -12,6 +12,8 @@ interface BookmarksNewsRepository {
 
     suspend fun deleteNews(savedNewsId: String): Result<Unit, DataError.Network>
 
+    suspend fun deleteAllNews(batchSize: Int): Result<Unit, DataError.Network>
+
     suspend fun toogleBookmark(newsItem: NewsItem): Result<Unit, DataError.Network>
 
 }

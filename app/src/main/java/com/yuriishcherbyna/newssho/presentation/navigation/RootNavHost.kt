@@ -219,6 +219,7 @@ fun RootNavHost(
 
                 BookmarksScreen(
                     uiState = uiState,
+                    showDialog = bookmarksViewModel.showDialog,
                     onAction = bookmarksViewModel::onAction,
                     onNewsClicked = { url, title ->
                         val encodedUrl = URLEncoder.encode(url, "UTF-8")

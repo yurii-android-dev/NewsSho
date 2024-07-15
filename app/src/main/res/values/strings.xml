@@ -43,4 +43,8 @@
     <string name="delete_account_alert_dialog_text">If you do this you will lose all your saved bookmarks and it can not be restored.</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="delete_icon">Delete icon</string>
+    <string name="bookmarks_successfully_deleted">Bookmarks successfully deleted</string>
+    <string name="empty_bookmarks_message">You don\'t have any bookmarks yet</string>
+    <string name="delete_bookmarks_alert_dialog_title">Are you sure you want to delete your bookmarks?</string>
 </resources>

@@ -73,6 +73,30 @@ class BookmarksNewsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAllNews(batchSize: Int): Result<Unit, DataError.Network> {
+        return try {
+            userId?.let { id ->
+                var deleted = 0
+                val response = db.collection("users").document(id).collection("bookmarks")
+                    .limit(batchSize.toLong())
+                    .get()
+                    .await()
+                for (document in response.documents) {
+                    document.reference.delete()
+                    ++deleted
+                    if (deleted >= batchSize) {
+                        deleteAllNews(batchSize)
+                    }
+                }
+            }
+            Log.d(TAG, "Successfully deleted all news")
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Log.d(TAG, "Error deleting all news: ${e.message}")
+            Result.Error(DataError.Network.UNKNOWN)
+        }
+    }
+
     override suspend fun toogleBookmark(newsItem: NewsItem): Result<Unit, DataError.Network> {
         return try {
             when (val news = getAllNews()) {
