@@ -74,6 +74,12 @@ fun RootNavHost(
         Screens.Account
     )
 
+    LaunchedEffect(currentBackStackEntry) {
+        currentBackStackEntry?.destination?.route?.let { route ->
+            selectedItem = items.indexOfFirst { it.route == route }.takeIf { it != -1 } ?: 0
+        }
+    }
+
     val signInScreen = currentBackStackEntry?.destination?.hierarchy?.any {
         it.route == Screens.SignIn.route
     } == true
