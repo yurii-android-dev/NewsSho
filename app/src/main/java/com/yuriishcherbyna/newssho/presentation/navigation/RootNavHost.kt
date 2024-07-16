@@ -15,6 +15,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,7 +56,8 @@ fun RootNavHost(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     
-    var selectedItem by remember { mutableIntStateOf(0) }
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+
     val showBottomBar by remember {
         derivedStateOf {
             currentBackStackEntry?.destination?.hierarchy?.
