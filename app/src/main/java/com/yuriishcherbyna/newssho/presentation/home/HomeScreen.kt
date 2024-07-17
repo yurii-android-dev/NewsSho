@@ -169,7 +169,7 @@ fun HomeScreen(
                     scrollBehavior = scrollBehavior,
                     onSearchClicked = { onAction(HomeAction.OnSearchBarActiveChanged) }
                 )
-                if (uiState.errorMessage == null) {
+                if (uiState.news.isNotEmpty()) {
                     CategoryChips(
                         selectedCategory = selectedCategory,
                         onCategoryClicked = { category ->
