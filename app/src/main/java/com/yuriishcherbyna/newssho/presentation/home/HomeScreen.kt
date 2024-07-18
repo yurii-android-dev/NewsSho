@@ -1,6 +1,5 @@
 package com.yuriishcherbyna.newssho.presentation.home
 
-import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +40,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
 import com.yuriishcherbyna.newssho.domain.model.NewsItem
@@ -49,12 +52,15 @@ import com.yuriishcherbyna.newssho.presentation.components.LoadingContent
 import com.yuriishcherbyna.newssho.presentation.components.NewsList
 import com.yuriishcherbyna.newssho.presentation.home.components.Chip
 import com.yuriishcherbyna.newssho.presentation.home.components.InitialSearchScreen
+import com.yuriishcherbyna.newssho.presentation.home.components.SearchNewsList
 import com.yuriishcherbyna.newssho.presentation.ui.theme.NewsShoTheme
+import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    searchNews: LazyPagingItems<NewsItem>,
     selectedCategory: Category,
     onAction: (HomeAction) -> Unit,
     onNewsClicked: (String, String) -> Unit
@@ -66,23 +72,14 @@ fun HomeScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val pagingRefreshState = searchNews.loadState.refresh
+
     LaunchedEffect(key1 = uiState.errorMessage) {
         if (uiState.errorMessage != null) {
             snackbarHostState.showSnackbar(
                 message = context.getString(uiState.errorMessage),
                 duration = SnackbarDuration.Long
             )
-            onAction(HomeAction.ClearErrorMessage)
-        }
-    }
-
-    LaunchedEffect(key1 = uiState.searchErrorMessage) {
-        if (uiState.searchErrorMessage != null) {
-            Toast.makeText(
-                context,
-                context.getString(uiState.searchErrorMessage),
-                Toast.LENGTH_LONG
-            ).show()
             onAction(HomeAction.ClearErrorMessage)
         }
     }
@@ -135,9 +132,9 @@ fun HomeScreen(
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         when {
-                            uiState.searchNews.isNotEmpty() -> {
-                                NewsList(
-                                    news = uiState.searchNews,
+                            searchNews.itemCount > 0 -> {
+                                SearchNewsList(
+                                    searchNews = searchNews,
                                     bookmarksNews = uiState.bookmarksNews,
                                     contentPadding = PaddingValues(vertical = 16.dp),
                                     onNewsClicked = onNewsClicked,
@@ -147,14 +144,16 @@ fun HomeScreen(
                                 )
                             }
 
-                            uiState.isLoading -> {
+                            pagingRefreshState is LoadState.Loading -> {
                                 LoadingContent(modifier = Modifier.align(Alignment.Center))
                             }
 
-                            uiState.searchErrorMessage != null -> {
-                                ErrorContent(onRefreshClicked = {
-                                    onAction(HomeAction.OnRefreshClicked)
-                                })
+                            pagingRefreshState is LoadState.Error -> {
+                                ErrorContent(
+                                    onRefreshClicked = {
+                                        onAction(HomeAction.OnRefreshClicked)
+                                    }
+                                )
                             }
 
                             else -> {
@@ -277,9 +276,10 @@ fun HomeScreenPreview() {
         }
         HomeScreen(
             uiState = HomeUiState(news = news),
+            searchNews = flowOf(PagingData.from(news)).collectAsLazyPagingItems(),
             selectedCategory = Category.GENERAL,
             onAction = {},
-            onNewsClicked = {_, _ ->}
+            onNewsClicked = { _, _ -> }
         )
     }
 }

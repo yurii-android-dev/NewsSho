@@ -19,6 +19,7 @@ interface NewsApi {
     suspend fun searchNews(
         @Query("apiKey") apiKey: String = BuildConfig.NEWS_API_KEY,
         @Query("q") query: String,
+        @Query("page") page: Int
     ): NewsDto
 
 }

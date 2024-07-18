@@ -3,6 +3,8 @@ package com.yuriishcherbyna.newssho.presentation.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
 import com.yuriishcherbyna.newssho.domain.model.NewsItem
@@ -30,6 +32,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _searchNews = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
+    val searchNews = _searchNews.asStateFlow()
+
     val selectedCategory = savedStateHandle.getStateFlow(
         SELECTED_CATEGORY_KEY,
         Category.GENERAL
@@ -41,15 +46,28 @@ class HomeViewModel @Inject constructor(
 
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.ClearSearchNews -> { clearSearchNews() }
-            HomeAction.ClearSearchQuery -> { clearSearchQueryState() }
-            HomeAction.ClearErrorMessage -> { clearErrorMessageState() }
+            HomeAction.ClearSearchNews -> {
+                clearSearchNews()
+            }
+
+            HomeAction.ClearSearchQuery -> {
+                clearSearchQueryState()
+            }
+
+            HomeAction.ClearErrorMessage -> {
+                clearErrorMessageState()
+            }
+
             is HomeAction.OnCategoryClicked -> {
                 onCategoryChanged(action.category)
                 clearLatestNewsState()
                 getLatestNews(action.category)
             }
-            is HomeAction.OnQueryChanged -> { onSearchQueryChanged(action.query) }
+
+            is HomeAction.OnQueryChanged -> {
+                onSearchQueryChanged(action.query)
+            }
+
             HomeAction.OnRefreshClicked -> {
                 if (_uiState.value.isSearchBarActive) {
                     searchNews()
@@ -58,9 +76,15 @@ class HomeViewModel @Inject constructor(
                     getLatestNews(selectedCategory.value)
                 }
             }
-            HomeAction.OnSearchBarActiveChanged -> { toogleSearchBarActive() }
+
+            HomeAction.OnSearchBarActiveChanged -> {
+                toogleSearchBarActive()
+            }
+
             HomeAction.OnSearchClicked -> {}
-            is HomeAction.OnBookmarkClicked -> { toogleBookmark(action.newsItem) }
+            is HomeAction.OnBookmarkClicked -> {
+                toogleBookmark(action.newsItem)
+            }
         }
     }
 
@@ -89,28 +113,13 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(FlowPreview::class)
     private fun searchNews() {
-        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             if (_uiState.value.searchQuery.isNotEmpty()) {
                 newsRepository.searchNews(_uiState.value.searchQuery)
                     .debounce(500)
+                    .cachedIn(viewModelScope)
                     .collect { result ->
-                        when (result) {
-                            is Result.Error -> {
-                                _uiState.update {
-                                    it.copy(
-                                        searchErrorMessage = result.error.toNetworkErrorMessageId(),
-                                        isLoading = false
-                                    )
-                                }
-                            }
-
-                            is Result.Success -> {
-                                _uiState.update {
-                                    it.copy(searchNews = result.data, isLoading = false)
-                                }
-                            }
-                        }
+                        _searchNews.value = result
                     }
             }
         }
@@ -124,6 +133,7 @@ class HomeViewModel @Inject constructor(
                         it.copy(errorMessage = R.string.failed_to_toogle_bookmarks_errors)
                     }
                 }
+
                 is Result.Success -> {}
             }
             getBookmarksNews()
@@ -138,6 +148,7 @@ class HomeViewModel @Inject constructor(
                         it.copy(errorMessage = R.string.failed_to_fetch_bookmarks_errors)
                     }
                 }
+
                 is Result.Success -> {
                     _uiState.update { it.copy(bookmarksNews = result.data) }
                 }
@@ -163,7 +174,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun clearSearchNews() {
-        _uiState.update { it.copy(searchNews = emptyList()) }
+        _searchNews.value = PagingData.empty()
     }
 
     private fun clearLatestNewsState() {
@@ -175,6 +186,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun clearErrorMessageState() { _uiState.update { it.copy(errorMessage = null) } }
+    private fun clearErrorMessageState() {
+        _uiState.update { it.copy(errorMessage = null) }
+    }
 
 }

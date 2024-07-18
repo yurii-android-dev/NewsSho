@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.yuriishcherbyna.newssho.R
 import com.yuriishcherbyna.newssho.presentation.account.AccountScreen
 import com.yuriishcherbyna.newssho.presentation.account.AccountViewModel
@@ -190,10 +191,12 @@ fun RootNavHost(
 
                 val homeViewModel: HomeViewModel = hiltViewModel()
                 val homeUiState by homeViewModel.uiState.collectAsState()
+                val searchNews = homeViewModel.searchNews.collectAsLazyPagingItems()
                 val selectedCategory by homeViewModel.selectedCategory.collectAsState()
 
                 HomeScreen(
                     uiState = homeUiState,
+                    searchNews = searchNews,
                     selectedCategory = selectedCategory,
                     onAction = homeViewModel::onAction,
                     onNewsClicked = { url, title ->
