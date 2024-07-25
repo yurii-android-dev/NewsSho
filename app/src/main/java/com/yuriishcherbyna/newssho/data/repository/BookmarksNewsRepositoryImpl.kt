@@ -1,9 +1,8 @@
 package com.yuriishcherbyna.newssho.data.repository
 
 import android.util.Log
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import com.yuriishcherbyna.newssho.domain.model.NewsItem
 import com.yuriishcherbyna.newssho.domain.repository.BookmarksNewsRepository
 import com.yuriishcherbyna.newssho.domain.util.DataError
@@ -14,10 +13,9 @@ import javax.inject.Inject
 private const val TAG = "BookmarksNewsRepositoryImpl"
 
 class BookmarksNewsRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore
 ): BookmarksNewsRepository {
-
-    private val db = Firebase.firestore
 
     private val userId = auth.currentUser?.uid
 
