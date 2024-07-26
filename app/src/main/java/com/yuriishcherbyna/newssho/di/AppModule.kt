@@ -27,7 +27,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
     @Provides

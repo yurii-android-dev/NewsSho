@@ -37,7 +37,6 @@ abstract class RepositoryModule {
     ): NewsRepository
 
     @Binds
-    @Singleton
     abstract fun bindsBookmarksNewsRepository(
         bookmarksNewsRepositoryImpl: BookmarksNewsRepositoryImpl
     ): BookmarksNewsRepository
