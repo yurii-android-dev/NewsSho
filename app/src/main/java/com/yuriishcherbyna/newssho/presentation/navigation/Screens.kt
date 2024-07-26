@@ -35,7 +35,7 @@ sealed class Screens(
             label = -1,
             icon = -1
         ) {
-        fun passUrlAndTitle(url: String, title: String) = "details_screen/$url/$title"
+        fun passUrlAndTitle(url: String, title: String?) = "details_screen/$url/$title"
     }
 
     data object Bookmarks : Screens(

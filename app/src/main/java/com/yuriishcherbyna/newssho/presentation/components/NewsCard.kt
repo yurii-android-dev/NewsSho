@@ -33,7 +33,7 @@ import com.yuriishcherbyna.newssho.presentation.home.components.PublishedAtAndBo
 fun NewsCard(
     newsItem: NewsItem,
     isBookmarked: Boolean,
-    onNewsClicked: (String, String) -> Unit,
+    onNewsClicked: (String, String?) -> Unit,
     onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,7 +68,7 @@ fun NewsCard(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = newsItem.title,
+                    text = newsItem.title ?: stringResource(id = R.string.unknown),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,

@@ -47,4 +47,5 @@
     <string name="bookmarks_successfully_deleted">Bookmarks successfully deleted</string>
     <string name="empty_bookmarks_message">You don\'t have any bookmarks yet</string>
     <string name="delete_bookmarks_alert_dialog_title">Are you sure you want to delete your bookmarks?</string>
+    <string name="unknown">Unknown</string>
 </resources>

@@ -209,7 +209,10 @@ fun RootNavHost(
                 route = Screens.Details.route,
                 arguments = listOf(
                     navArgument(DETAILS_SCREEN_URL_ARG) { type = NavType.StringType },
-                    navArgument(DETAILS_SCREEN_TITLE_ARG) { type = NavType.StringType }
+                    navArgument(DETAILS_SCREEN_TITLE_ARG) {
+                        type = NavType.StringType
+                        nullable = true
+                    }
                 )
             ) {
 
@@ -262,7 +265,7 @@ fun RootNavHost(
                     onLogOutClicked = {
                         accountViewModel.logOut()
                         navController.navigate(Screens.SignIn.route) {
-                            popUpTo(Screens.Account.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
                                 inclusive = true
                             }
                         }

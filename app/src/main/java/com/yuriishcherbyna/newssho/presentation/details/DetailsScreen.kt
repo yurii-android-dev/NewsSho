@@ -31,14 +31,12 @@ fun DetailsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    if (title != null) {
-                        Text(
-                            text = title,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(end = 64.dp)
-                        )
-                    }
+                    Text(
+                        text = title ?: stringResource(id = R.string.unknown),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(end = 64.dp)
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBackClicked) {

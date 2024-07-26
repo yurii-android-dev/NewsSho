@@ -63,7 +63,7 @@ fun HomeScreen(
     searchNews: LazyPagingItems<NewsItem>,
     selectedCategory: Category,
     onAction: (HomeAction) -> Unit,
-    onNewsClicked: (String, String) -> Unit
+    onNewsClicked: (String, String?) -> Unit
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

@@ -19,7 +19,7 @@ fun SearchNewsList(
     searchNews: LazyPagingItems<NewsItem>,
     bookmarksNews: List<NewsItem>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onNewsClicked: (String, String) -> Unit,
+    onNewsClicked: (String, String?) -> Unit,
     onBookmarkClicked: (NewsItem) -> Unit,
     modifier: Modifier = Modifier
 ) {

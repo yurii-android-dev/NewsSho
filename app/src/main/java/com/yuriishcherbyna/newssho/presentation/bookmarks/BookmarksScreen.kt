@@ -42,7 +42,7 @@ fun BookmarksScreen(
     uiState: BookmarksUiState,
     showDialog: Boolean,
     onAction: (BookmarksAction) -> Unit,
-    onNewsClicked: (String,String) -> Unit,
+    onNewsClicked: (String,String?) -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
