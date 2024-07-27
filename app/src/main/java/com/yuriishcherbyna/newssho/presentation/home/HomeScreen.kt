@@ -251,7 +251,7 @@ fun CategoryChips(
         Category.entries.forEach { category ->
             Chip(
                 selectedCategory = selectedCategory,
-                text = category.name,
+                textId = category.nameId,
                 onCategoryClicked = {
                     onCategoryClicked(category)
                 }

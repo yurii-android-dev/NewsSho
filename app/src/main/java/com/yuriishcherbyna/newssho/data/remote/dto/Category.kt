@@ -1,20 +1,22 @@
 package com.yuriishcherbyna.newssho.data.remote.dto
 
+import androidx.annotation.StringRes
 import com.squareup.moshi.Json
+import com.yuriishcherbyna.newssho.R
 
-enum class Category {
+enum class Category(@StringRes val nameId: Int) {
     @Json(name = "general")
-    GENERAL,
+    GENERAL(R.string.general),
     @Json(name = "business")
-    BUSINESS,
+    BUSINESS(R.string.business),
     @Json(name = "entertainment")
-    ENTERTAINMENT,
+    ENTERTAINMENT(R.string.entertainment),
     @Json(name = "health")
-    HEALTH,
+    HEALTH(R.string.health),
     @Json(name = "science")
-    SCIENCE,
+    SCIENCE(R.string.science),
     @Json(name = "sports")
-    SPORTS,
+    SPORTS(R.string.sports),
     @Json(name = "technology")
-    TECHNOLOGY
+    TECHNOLOGY(R.string.technology)
 }

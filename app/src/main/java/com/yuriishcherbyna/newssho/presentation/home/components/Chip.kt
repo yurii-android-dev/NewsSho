@@ -1,5 +1,6 @@
 package com.yuriishcherbyna.newssho.presentation.home.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -9,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.yuriishcherbyna.newssho.data.remote.dto.Category
 import java.util.Locale
@@ -16,12 +18,12 @@ import java.util.Locale
 @Composable
 fun Chip(
     selectedCategory: Category,
-    text: String,
+    @StringRes textId: Int,
     onCategoryClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    val isSelected = selectedCategory.name == text
+    val isSelected = selectedCategory.nameId == textId
 
     val background =
         if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
@@ -37,9 +39,7 @@ fun Chip(
         modifier = modifier
     ) {
         Text(
-            text = text.lowercase().replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-            },
+            text = stringResource(id = textId),
             color = contentColor,
             modifier = Modifier.padding(8.dp)
         )

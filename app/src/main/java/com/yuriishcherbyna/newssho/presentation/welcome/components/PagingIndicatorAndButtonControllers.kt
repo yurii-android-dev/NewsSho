@@ -22,8 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.yuriishcherbyna.newssho.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +44,7 @@ fun PagingIndicatorAndButtonControllers(
     ) {
         if (pagerState.currentPage > 0) {
             Text(
-                text = "Back",
+                text = stringResource(id = R.string.back),
                 color = Color.White,
                 modifier = Modifier
                     .weight(1f)
@@ -76,7 +78,7 @@ fun PagingIndicatorAndButtonControllers(
         }
         if (pagerState.currentPage < pagerState.pageCount - 1) {
             Text(
-                text = "Next",
+                text = stringResource(id = R.string.next),
                 textAlign = TextAlign.End,
                 color = Color.White,
                 modifier = Modifier
@@ -97,7 +99,7 @@ fun PagingIndicatorAndButtonControllers(
             )
         } else {
             Text(
-                text = "Done",
+                text = stringResource(id = R.string.done),
                 textAlign = TextAlign.End,
                 color = Color.White,
                 modifier = Modifier
