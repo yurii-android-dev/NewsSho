@@ -31,4 +31,9 @@ Dark Version
 - Firebase Auth
 - Firebase Firestore
 
+# Local setup
+
+For local setup you need to add this line of code to the <b>gradle.properties</b> file: NEWS_API_KEY="YOUR_API_KEY" </br>
+Instead of <b>"YOUR_API_KEY"</b> you need to add your own API key where you can get on this website: https://newsapi.org/
+
 
